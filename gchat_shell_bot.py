@@ -10,7 +10,7 @@ import getpass
 from optparse import OptionParser
 import sleekxmpp
 
-USERNAME = os.getenv('GUSER')
+USERNAME = ''
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
