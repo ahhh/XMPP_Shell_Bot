@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ShellBot v0.1
 # Code heavily borrowed from SleekXMPP's MUCBot 
-# https://web.archive.org/web/20120314222426/http://sleekxmpp.com/getting_started/muc.html
+# https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 
 import sys, os, subprocess
 import logging
