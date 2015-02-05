@@ -11,7 +11,9 @@ import getpass
 from optparse import OptionParser
 import sleekxmpp
 
-USERNAME = ''
+# Requires a Google account user name that allows less secure apps.
+# https://www.google.com/settings/security/lesssecureapps
+USERNAME = 'example@gmail.com'
 CMD_TOKEN = '$'
 #SHELLCHAT = ''
 #SHELLNIC = ''
