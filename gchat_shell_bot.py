@@ -9,8 +9,10 @@ import logging
 import getpass
 from optparse import OptionParser
 import sleekxmpp
+import random
 
 USERNAME = ''
+CMD_TOKEN = '$'
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
@@ -53,8 +55,13 @@ class MUCBot(sleekxmpp.ClientXMPP):
   # reply to messages
   def message(self, msg):
       if msg['type'] in ('chat', 'normal'):
-          reply = self.run_command(msg['body'])
-          msg.reply(reply).send()
+          body = msg['body']
+          if body and body[0] == CMD_TOKEN:
+            reply = self.run_command(body.lstrip(CMD_TOKEN))
+            msg.reply(reply).send()
+          else:
+            reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
+            msg.reply(reply).send()
 
   # reply to nick_name mentions
   def muc_message(self, msg):
