@@ -4,12 +4,12 @@
 # Code heavily borrowed from SleekXMPP's MUCBot 
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 
+import time, random
 import sys, os, subprocess
 import logging
 import getpass
 from optparse import OptionParser
 import sleekxmpp
-import random
 
 USERNAME = ''
 CMD_TOKEN = '$'
@@ -60,6 +60,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
             reply = self.run_command(body.lstrip(CMD_TOKEN))
             msg.reply(reply).send()
           else:
+            time.sleep(random.uniform(0.4, 2.45))
             reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
             msg.reply(reply).send()
 
