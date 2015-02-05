@@ -9,13 +9,16 @@ Further you have to navigate to https://www.google.com/settings/security/lesssec
 - [**Any**] : Replies with Standard Bot Response.
 - [**$** *Prepended*] : Replies with the Shell Output.
 
-### Options:
+### Requires:
+  - sleekxmpp
+  - dnspython
+
+### Available Startup Options:
 - **-q** :: Start in Quiet Mode
 - **-d** :: Start in Debug Mode
 - **-v** :: Activate more Verbosity
 - **-j** :: User ID (Email)
 - **-p** :: Password
 
-### Requires:
-  - sleekxmpp
-  - dnspython
+
+
