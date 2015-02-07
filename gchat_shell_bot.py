@@ -46,25 +46,25 @@ class MUCBot(sleekxmpp.ClientXMPP):
 
   # session_start event
   def start(self, event):
-      self.get_roster()
-      self.send_presence()
-      #Don't join groupchat yet
-      #self.plugin['xep_0045'].joinMUC(self.room,
-      #                                self.nick,
-      #                                # password=room_password,
-      #                                wait=True)
+    self.get_roster()
+    self.send_presence()
+    #Don't join groupchat yet
+    #self.plugin['xep_0045'].joinMUC(self.room,
+    #                                self.nick,
+    #                                # password=room_password,
+    #                                wait=True)
 
   # reply to messages
   def message(self, msg):
-      if msg['type'] in ('chat', 'normal'):
-          body = msg['body']
-          if body and body[0] == CMD_TOKEN:
-            reply = self.run_command(body.lstrip(CMD_TOKEN))
-            msg.reply(reply).send()
-          else:
-            time.sleep(random.uniform(0.4, 2.45))
-            reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
-            msg.reply(reply).send()
+    if msg['type'] in ('chat', 'normal'):
+      body = msg['body']
+      if body and body[0] == CMD_TOKEN:
+        reply = self.run_command(body.lstrip(CMD_TOKEN))
+        msg.reply(reply).send()
+      else:
+        time.sleep(random.uniform(0.4, 2.45))
+        reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
+        msg.reply(reply).send()
 
   # reply to nick_name mentions
   def muc_message(self, msg):
@@ -82,10 +82,10 @@ class MUCBot(sleekxmpp.ClientXMPP):
                         mtype='groupchat')
 
   def run_command(self, cmd):
-      proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-      stdoutput = proc.stdout.read() + proc.stderr.read()
-      return stdoutput
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+    stdoutput = proc.stdout.read() + proc.stderr.read()
+    return stdoutput
 
 
 def main():
@@ -120,10 +120,12 @@ def main():
                       format='%(levelname)-8s %(message)s')
 
   if opts.jid is None:
-  #    opts.jid = raw_input("Username: ")
+    if USERNAME:
       opts.jid = USERNAME
+    else:
+      raise Exception("Username not set: use -j to set it.")
   if opts.password is None:
-      opts.password = getpass.getpass("Password: ")
+    opts.password = getpass.getpass("Password: ")
   #if opts.room is None:
   #    opts.room = raw_input("MUC room: ")
   #    opts.room = SHELLCHAT
