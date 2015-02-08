@@ -60,10 +60,12 @@ class MUCBot(sleekxmpp.ClientXMPP):
   def message(self, msg):
     if msg['type'] in ('chat', 'normal'):
       body = msg['body']
+      #Execute and respond to $command instructions
       if body and body[0] == CMD_TOKEN:
         reply = self.run_command(body.lstrip(CMD_TOKEN))
         msg.reply(reply).send()
         return
+      #Execute and respond to !download instructions
       if body and body[0] == DWNLD_TOKEN:
         self.download(body.lstrip(DWNLD_TOKEN))
         msg.reply("file saved to: "+body.lstrip(DWNLD_TOKEN).split('/')[-1]).send()
@@ -97,7 +99,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
     #Grab our file from some url and save it to a file
     req = urllib2.Request('%s' % (url))
     message = urllib2.urlopen(req)
-    filename = url.split('/')[-1]
+    filename = url.split('/')[-1] #Keep file name consistent w/ file downloaded
     localFile = open(filename, 'w')
     localFile.write(message.read())
     localFile.close()
