@@ -95,8 +95,8 @@ class MUCBot(sleekxmpp.ClientXMPP):
     stdoutput = proc.stdout.read() + proc.stderr.read()
     return stdoutput
 
+  #Grab our file from some url and save it to a file
   def download(self, url):
-    #Grab our file from some url and save it to a file
     req = urllib2.Request('%s' % (url))
     message = urllib2.urlopen(req)
     filename = url.split('/')[-1] #Keep file name consistent w/ file downloaded
