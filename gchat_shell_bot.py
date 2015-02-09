@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 # ShellBot v0.2
 # Code heavily borrowed from SleekXMPP's MUCBot 
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
@@ -14,9 +15,17 @@ import sleekxmpp
 
 # Requires a Google account user name that allows less secure apps.
 # https://www.google.com/settings/security/lesssecureapps
+
 USERNAME = 'example@gmail.com'
 CMD_TOKEN = '$'
 DWNLD_TOKEN = '!'
+
+SERVICE_DISCOVERY = 'xep_0030'
+MULTIUSER_CHAT = 'xep_0045'
+XMPP_PING = 'xep_0199'
+
+MESSAGES = ['what?', 'huh..', 'mmmmm', 'I don\'t get it']
+
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
@@ -43,18 +52,15 @@ class MUCBot(sleekxmpp.ClientXMPP):
     #self.add_event_handler("groupchat_message", self.muc_message)
 
     # The groupchat_presence event is triggered whenever someone joins a room
-    #self.add_event_handler("muc::%s::got_online" % self.room,
-    #                       self.muc_online)
+    #self.add_event_handler("muc::%s::got_online" % self.room, self.muc_online)
 
   # session_start event
   def start(self, event):
     self.get_roster()
     self.send_presence()
     #Don't join groupchat yet
-    #self.plugin['xep_0045'].joinMUC(self.room,
-    #                                self.nick,
-    #                                # password=room_password,
-    #                                wait=True)
+    #self.plugin[MULTIUSER_CHAT].joinMUC(self.room, self.nick,
+    #  password=room_password, wait=True)
 
   # reply to messages
   def message(self, msg):
@@ -68,10 +74,12 @@ class MUCBot(sleekxmpp.ClientXMPP):
       #Execute and respond to !download instructions
       if body and body[0] == DWNLD_TOKEN:
         self.download(body.lstrip(DWNLD_TOKEN))
-        msg.reply("file saved to: "+body.lstrip(DWNLD_TOKEN).split('/')[-1]).send()
+        savedToMsg = "file saved to: {}".format(
+          body.lstrip(DWNLD_TOKEN).split('/')[-1])
+        msg.reply(savedToMsg).send()
         return
       time.sleep(random.uniform(0.4, 2.45))
-      reply = random.choice(['what?', 'huh..', 'mmmmm', 'I don\'t get it'])
+      reply = random.choice(MESSAGES)
       msg.reply(reply).send()
 
   # reply to nick_name mentions
@@ -152,9 +160,9 @@ def main():
 
   # Setup the MUCBot and register plugins.
   xmpp = MUCBot(opts.jid, opts.password) #, opts.room, opts.nick)
-  xmpp.register_plugin('xep_0030') # Service Discovery
-  xmpp.register_plugin('xep_0045') # Multi-User Chat
-  xmpp.register_plugin('xep_0199') # XMPP Ping
+  xmpp.register_plugin(SERVICE_DISCOVERY) # Service Discovery
+  xmpp.register_plugin(MULTIUSER_CHAT) # Multi-User Chat
+  xmpp.register_plugin(XMPP_PING) # XMPP Ping
 
   # Connect to the XMPP server and start processing XMPP stanzas.
   if xmpp.connect():
