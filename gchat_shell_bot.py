@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# ShellBot v0.2
+# GandhiChat ShellBot v0.3
 # Code heavily borrowed from SleekXMPP's MUCBot 
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 
