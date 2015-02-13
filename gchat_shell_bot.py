@@ -24,8 +24,8 @@ SERVICE_DISCOVERY = 'xep_0030'
 MULTIUSER_CHAT = 'xep_0045'
 XMPP_PING = 'xep_0199'
 
-MESSAGES = ['what?', 'huh..', 'mmmmm', 'I don\'t get it']
-
+#Gandhi Version 
+MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.',]
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
