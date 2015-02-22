@@ -13,6 +13,7 @@ Further you have to navigate to https://www.google.com/settings/security/lesssec
 - [**Any**] : Replies with Standard Bot Response.
 - [**$** *Prepended*] : Replies with the Shell Output.
 - [**!** *Prepended*] : Downloads file from the following URL.
+- [**^** *Prepended*] : Upload file to public pastebin.
 
 ### Available Startup Options:
 - **-q** :: Start in Quiet Mode
