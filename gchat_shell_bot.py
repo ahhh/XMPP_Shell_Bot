@@ -25,7 +25,7 @@ MULTIUSER_CHAT = 'xep_0045'
 XMPP_PING = 'xep_0199'
 
 #Gandhi Version 
-MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.',]
+MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.', 'Flag: "MyCrimeIsThatOfCuriosity"']
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
