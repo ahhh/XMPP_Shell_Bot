@@ -10,16 +10,17 @@ Further you have to navigate to https://www.google.com/settings/security/lesssec
   - dnspython
 
 ### Commands:
-- [**Any**] : Replies with Standard Bot Response.
-- [**$** *Prepended*] : Replies with the Shell Output.
+- [**Any**] : Replies with standard bot response.
+- [**$** *Prepended*] : Replies with the shell output.
 - [**!** *Prepended*] : Downloads file from the following URL.
 - [**^** *Prepended*] : Upload file to public pastebin.
+- [**%** *Prepended*] : XORs file with a hardcoded byte array.
 
 ### Available Startup Options:
-- **-q** :: Start in Quiet Mode
-- **-d** :: Start in Debug Mode
-- **-v** :: Activate more Verbosity
-- **-j** :: User ID (Email)
+- **-q** :: Start in quiet mode
+- **-d** :: Start in debug mode
+- **-v** :: Activate more verbosity
+- **-j** :: User ID (email)
 - **-p** :: Password
 
 
