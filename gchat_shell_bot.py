@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# GandhiChat ShellBot v0.4
+# GandhiChat ShellBot v0.5
 # Code borrowed from SleekXMPP's MUCBot and Sentynel's Pastebin script
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 # https://sentynel.com/project/Pastebin_Script
@@ -30,8 +30,8 @@ XMPP_PING = 'xep_0199'
 #Pastebin varriables
 devkey = "6c71766cdadff9f33347e80131397ac2"
 
-##xor_var bytes are currently hardcoded
-xor_var = bytearray([0xde,0xad,0x13,0x37])
+#The default byte array if one is not specified
+hardcoded_bytearray= "de ad 13 37"
 
 #Gandhi Version 
 MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.',]
@@ -46,10 +46,11 @@ else:
 
 class MUCBot(sleekxmpp.ClientXMPP):
 
-  def __init__(self, jid, password):  # , room, nick):
+  def __init__(self, jid, password, xor_var):  # , room, nick):
     sleekxmpp.ClientXMPP.__init__(self, jid, password)
     #self.room = room
     #self.nick = nick
+    self.xor_var = bytearray(self.hexToByte(xor_var))
 
     # The session_start event will be triggered when the bot connects to the server
     self.add_event_handler("session_start", self.start)
@@ -95,7 +96,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
       #Execute and respond to the %xor instruction  
       if body and body[0] == XOR_TOKEN:
         file_name = format(body.lstrip(XOR_TOKEN).split('/')[-1])
-        self.xor(file_name, xor_var, file_name+".new")
+        self.xor(file_name, file_name+".new", self.xor_var)
         msg.reply("file saved as "+file_name+".new").send()
         return
       #Default response if no special tokens were given
@@ -155,7 +156,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
       else:
         return reply
 
-  def xor(self, orginal_file, xor_var, new_file):
+  def xor(self, orginal_file, new_file, xor_var):
     l = len(xor_var)
     data = bytearray(open(orginal_file, 'rb').read())
     result = bytearray((
@@ -164,7 +165,13 @@ class MUCBot(sleekxmpp.ClientXMPP):
     localFile = open(new_file, 'w')
     localFile.write(result)
     localFile.close()
-    return
+
+  def hexToByte(self, hexStr):
+    bytes = []
+    hexStr = ''.join( hexStr.split(" ") )
+    for i in range(0, len(hexStr), 2):
+      bytes.append( chr( int (hexStr[i:i+2], 16 ) ) )
+    return bytes
 
 
 def main():
@@ -187,6 +194,8 @@ def main():
                   help="JID to use")
   optp.add_option("-p", "--password", dest="password",
                   help="password to use")
+  optp.add_option("-x", "--hex", dest="xor_var",
+                  help="Hex vals (seperated by a space) to XOR with, turns into a byte array ") 
   #optp.add_option("-r", "--room", dest="room",
   #                help="MUC room to join")
   #optp.add_option("-n", "--nick", dest="nick",
@@ -205,6 +214,8 @@ def main():
       raise Exception("Username not set: use -j to set it.")
   if opts.password is None:
     opts.password = getpass.getpass("Password: ")
+  if opts.xor_var is None:
+    opts.xor_var = hardcoded_bytearray
   #if opts.room is None:
   #    opts.room = raw_input("MUC room: ")
   #    opts.room = SHELLCHAT
@@ -213,7 +224,7 @@ def main():
   #    opts.nick = SHELLNIC
 
   # Setup the MUCBot and register plugins.
-  xmpp = MUCBot(opts.jid, opts.password) #, opts.room, opts.nick)
+  xmpp = MUCBot(opts.jid, opts.password, opts.xor_var) #, opts.room, opts.nick)
   xmpp.register_plugin(SERVICE_DISCOVERY) # Service Discovery
   xmpp.register_plugin(MULTIUSER_CHAT) # Multi-User Chat
   xmpp.register_plugin(XMPP_PING) # XMPP Ping
