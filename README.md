@@ -8,13 +8,16 @@ Further you have to navigate to https://www.google.com/settings/security/lesssec
 ### Requires:
   - sleekxmpp
   - dnspython
+  - Pillow
+  - pyscreenshot
 
 ### Commands:
 - [**Any**] : Replies with standard bot response.
 - [**$** *Prepended*] : Replies with the shell output.
 - [**!** *Prepended*] : Downloads file from the following URL.
-- [**^** *Prepended*] : Upload file to public pastebin.
-- [**%** *Prepended*] : XORs file with a hardcoded byte array.
+- [**^** *Prepended*] : Upload following file to public pastebin.
+- [**%** *Prepended*] : XORs following file with a hardcoded byte array.
+- [***** *Prepended*] : Takes a screenshot and names it the following string.
 
 ### Available Startup Options:
 - **-q** :: Start in quiet mode
