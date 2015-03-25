@@ -36,7 +36,7 @@ devkey = "6c71766cdadff9f33347e80131397ac2"
 hardcoded_bytearray= "de ad 13 37"
 
 #Gandhi Version 
-MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.',]
+MESSAGES = ['I fear no one on Earth.', 'I follow God.', 'I bear no ill will toward anyone.', 'I will not submit to injustice.', 'I will conquer untruth with truth.', 'I will put up with suffering.', 'Be the change you wish to see.', 'My life is my message', 'Live as though you would die today.', 'Learn as though you would live forever.', 'Continue to grow and evolve.',]
 #SHELLCHAT = ''
 #SHELLNIC = ''
 
